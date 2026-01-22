@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment | MediCore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+    :root {
+        /* CONSISTENT MEDICORE THEME */
+        --primary: #007bff;          /* Blue */
+        --primary-dark: #0056b3;
+        --success: #28a745;          /* Green */
+        --danger: #ff4d4d;
+
+        --bg-main: #f4f7f6;          /* Light background */
+        --bg-sidebar: #2c3e50;       /* Dark sidebar */
+        --bg-card: #ffffff;
+
+        --text-dark: #2c3e50;
+        --text-gray: #6c757d;
+        --border-color: #e0e0e0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        background: var(--bg-main);
+        height: 100vh;
+        overflow: hidden;
+        color: var(--text-dark);
+    }
+
+    .dashboard-container {
+        display: flex;
+        height: 100%;
+    }
+
+    /* ---------- SIDEBAR ---------- */
+    .sidebar {
+        width: 250px;
+        background: var(--bg-sidebar);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .sidebar-header {
+        font-size: 1.6rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .sidebar-header i {
+        color: var(--success);
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sidebar-menu li a {
+        color: #d1d5db;
+        text-decoration: none;
+        padding: 12px 18px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: 0.3s;
+    }
+
+    .sidebar-menu li a:hover {
+        background: rgba(255,255,255,0.08);
+        color: white;
+    }
+
+    .sidebar-menu li.active a {
+        background: var(--primary);
+        color: white;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+        border-top: 1px solid rgba(255,255,255,0.15);
+        padding-top: 15px;
+    }
+
+    .logout-btn {
+        color: var(--danger) !important;
+    }
+
+    /* ---------- MAIN CONTENT ---------- */
+    .main-content {
+        flex-grow: 1;
+        padding: 30px;
+        overflow-y: auto;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .subtitle {
+        color: var(--text-gray);
+        font-size: 0.9rem;
+    }
+
+    .back-link {
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: 500;
+    }
+
+    /* ---------- FORM CARD ---------- */
+    .form-card {
+        background: var(--bg-card);
+        max-width: 650px;
+        margin: auto;
+        padding: 35px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border-top: 5px solid var(--success);
+    }
+
+    .input-group {
+        margin-bottom: 22px;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        font-size: 0.95rem;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus,
+    .input-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    /* ---------- BUTTON ---------- */
+    .btn-primary {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+    }
+
+    /* ---------- TOAST ---------- */
+    #toast-container {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        z-index: 1000;
+    }
+
+    .toast {
+        background: white;
+        padding: 14px 18px;
+        border-left: 5px solid var(--success);
+        border-radius: 6px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        margin-bottom: 12px;
+        display: flex;
+        gap: 10px;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateX(40px);
+        transition: 0.4s;
+    }
+
+    .toast.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .toast.error {
+        border-color: var(--danger);
+    }
+
+    /* ---------- MOBILE ---------- */
+    @media (max-width: 768px) {
+        .sidebar { display: none; }
+        .main-content { padding: 20px; }
+    }
+</style>
+
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-heartbeat"></i> MediCore
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="patient-dashboard.html"><i class="fas fa-columns"></i> Dashboard</a></li>
+                <li class="active"><a href="#"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
+                <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                
+                <li class="sidebar-footer">
+                    <a href="#" onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <div>
+                    <h2>Book Your Appointment</h2>
+                    <p class="subtitle">Schedule a visit with our specialists.</p>
+                </div>
+                <a href="patient-dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            </header>
+
+            <div class="form-card">
+                <form id="bookAppointmentForm">
+                    <div class="input-group">
+                        <label>Choose Your Specialist</label>
+                        <select id="doctorSelect" required>
+                            <option value="">Searching for available doctors...</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Preferred Date</label>
+                        <input type="datetime-local" id="app-date" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Reason for Visit</label>
+                        <textarea id="app-reason" rows="4" placeholder="Describe your symptoms briefly..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        Confirm Appointment
+                    </button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (!token) {
+            // window.location.href = 'login.html'; 
+            console.log("Demo Mode: No token");
+        }
+
+        // 1. Load Doctors
+        async function loadDoctors() {
+            const select = document.getElementById('doctorSelect');
+            try {
+                const res = await fetch('http://localhost:5002/api/doctors');
+                const data = await res.json();
+                
+                select.innerHTML = '<option value="" disabled selected>-- Select a Specialist --</option>';
+
+                if(data.data && data.data.length > 0) {
+                    data.data.forEach(doc => {
+                        const option = document.createElement('option');
+                        option.value = doc._id; 
+                        option.text = `Dr. ${doc.name} (${doc.specialization || 'General'})`;
+                        select.appendChild(option);
+                    });
+                } else {
+                    select.innerHTML = '<option value="">No doctors available</option>';
+                }
+            } catch (err) {
+                console.error("Error loading doctors", err);
+                select.innerHTML = '<option value="">Error loading doctors</option>';
+            }
+        }
+
+        // 2. Submit Booking
+        document.getElementById('bookAppointmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
+            btn.style.opacity = '0.7';
+
+            const bookingData = {
+                doctor: document.getElementById('doctorSelect').value,
+                patient: user ? (user.id || user._id) : 'demo_id',
+                appointmentDate: document.getElementById('app-date').value,
+                reason: document.getElementById('app-reason').value
+            };
+
+            try {
+                // Simulate network
+                // await new Promise(r => setTimeout(r, 1000));
+
+                const res = await fetch('http://localhost:5002/api/appointments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+
+                const data = await res.json();
+
+                if (data.success || res.ok) {
+                    showToast('Appointment Booked Successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'patient-dashboard.html';
+                    }, 1500);
+                } else {
+                    showToast('Failed: ' + (data.message || 'Unknown Error'), 'error');
+                    btn.innerHTML = originalText;
+                    btn.style.opacity = '1';
+                }
+            } catch (err) {
+                console.error("Booking Error:", err);
+                showToast('Server connection failed.', 'error');
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+            }
+        });
+
+        // 3. Toast
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 600);
+            }, 3000);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        // Initialize
+        loadDoctors();
+    </script>
+</body>
+</html>

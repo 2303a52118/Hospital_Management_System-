@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCore | Advanced Hospital Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header id="header">
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i> MediCore
+            </div>
+            <nav class="navbar">
+                <ul class="nav-links">
+                    <li><a href="#hero" class="active">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#doctors">Doctors</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li class="mobile-only"><a href="register.html">Register</a></li>
+                </ul>
+            </nav>
+            <div class="header-btn">
+                <a href="register.html" class="btn btn-primary">Register / Login</a>
+            </div>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <section id="hero">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <h1>Caring for Life, <br> <span class="highlight">Every Day.</span></h1>
+            <p>Experience world-class healthcare with our team of expert doctors and state-of-the-art facilities. Your health is our priority.</p>
+            <div class="hero-buttons">
+                <a href="#appointment" class="btn btn-primary">Book Appointment</a>
+                <a href="#doctors" class="btn btn-outline">Find a Doctor</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="stats">
+        <div class="container stats-grid">
+            <div class="stat-item">
+                <i class="fas fa-user-injured"></i>
+                <h2 class="counter" data-target="15000">0</h2>
+                <p>Happy Patients</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-user-md"></i>
+                <h2 class="counter" data-target="150">0</h2>
+                <p>Expert Doctors</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-clinic-medical"></i>
+                <h2 class="counter" data-target="25">0</h2>
+                <p>Departments</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-award"></i>
+                <h2 class="counter" data-target="20">0</h2>
+                <p>Years Experience</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section-padding">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Services</h2>
+                <p>Comprehensive healthcare solutions for you and your family.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="icon-box"><i class="fas fa-heartbeat"></i></div>
+                    <h3>Cardiology</h3>
+                    <p>Expert heart care with advanced diagnostic and treatment technologies.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box"><i class="fas fa-brain"></i></div>
+                    <h3>Neurology</h3>
+                    <p>Comprehensive care for disorders of the nervous system and brain.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box"><i class="fas fa-baby"></i></div>
+                    <h3>Pediatrics</h3>
+                    <p>Specialized medical care for infants, children, and adolescents.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box"><i class="fas fa-ambulance"></i></div>
+                    <h3>Emergency</h3>
+                    <p>24/7 emergency services ready to handle critical situations.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box"><i class="fas fa-tooth"></i></div>
+                    <h3>Dental Care</h3>
+                    <p>Complete dental solutions from checkups to cosmetic surgery.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box"><i class="fas fa-vial"></i></div>
+                    <h3>Laboratory</h3>
+                    <p>High-precision pathology and diagnostic testing services.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section-padding bg-light">
+        <div class="container about-wrapper">
+            <div class="about-img">
+                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Hospital Interior">
+            </div>
+            <div class="about-content">
+                <h2>Why Choose MediCore?</h2>
+                <p>We are dedicated to providing the best medical care with a patient-centric approach.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check-circle"></i> 24/7 Emergency Support</li>
+                    <li><i class="fas fa-check-circle"></i> Highly Qualified Doctors</li>
+                    <li><i class="fas fa-check-circle"></i> Cutting-Edge Medical Technology</li>
+                    <li><i class="fas fa-check-circle"></i> Affordable Healthcare Plans</li>
+                </ul>
+                <a href="#contact" class="btn btn-primary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="doctors" class="section-padding">
+        <div class="container">
+            <div class="section-title">
+                <h2>Meet Our Specialists</h2>
+                <p>Top-tier medical professionals dedicated to your health.</p>
+            </div>
+            <div class="doctors-grid">
+                <div class="doctor-card">
+                    <div class="doc-img">
+                         <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Dr. Smith">
+                    </div>
+                    <div class="doc-info">
+                        <h3>Dr. John Smith</h3>
+                        <span>Cardiologist</span>
+                        <p>15 Years Experience</p>
+                        <div class="socials">
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <div class="doc-img">
+                        <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Dr. Sarah">
+                    </div>
+                    <div class="doc-info">
+                        <h3>Dr. Sarah Lee</h3>
+                        <span>Neurologist</span>
+                        <p>12 Years Experience</p>
+                        <div class="socials">
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-card">
+                    <div class="doc-img">
+                        <img src="https://images.unsplash.com/photo-1537368910025-58d90f2cd522?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="Dr. Mike">
+                    </div>
+                    <div class="doc-info">
+                        <h3>Dr. Mike Ross</h3>
+                        <span>Pediatrician</span>
+                        <p>10 Years Experience</p>
+                        <div class="socials">
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="appointment" class="section-padding bg-blue">
+        <div class="container appointment-wrapper">
+            <div class="app-text">
+                <h2>Make an Appointment</h2>
+                <p>Fill out the form below and we will get back to you immediately.</p>
+            </div>
+            <form class="app-form" id="bookingForm">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="phone" placeholder="Phone Number" required>
+                </div>
+                <div class="form-group">
+                    <select id="department" required>
+                        <option value="" disabled selected>Select Department</option>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="Neurology">Neurology</option>
+                        <option value="Pediatrics">Pediatrics</option>
+                        <option value="General">General Medicine</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="date" id="date" required>
+                </div>
+                <button type="submit" class="btn btn-light full-width">Confirm Booking</button>
+            </form>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h3>MediCore</h3>
+                <p>Providing advanced medical care with compassion and expertise.</p>
+                <div class="footer-socials">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#doctors">Doctors</a></li>
+                    <li><a href="#appointment">Booking</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Health Street, Med City</p>
+                <p><i class="fas fa-phone"></i> +1 234 567 8900</p>
+                <p><i class="fas fa-envelope"></i> contact@medicore.com</p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2026 MediCore Hospital Management System. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard | MediCore</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CONSISTENT LAYOUT CSS */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            padding: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Topbar */
+        .topbar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* Cards & Banners */
+        .welcome-banner {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+        }
+
+        .appointment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 5px solid #007bff; /* Blue for patients */
+        }
+
+        .flex-row { display: flex; align-items: center; }
+        .btn-sm { padding: 10px 18px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; text-decoration: none; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-light { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; }
+        .btn-danger { background: #ff4d4d; color: white; margin-left: 10px; }
+
+        .doc-img { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; background: #eee; }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header" style="padding: 25px; font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid #3e4f5f;">
+                <i class="fas fa-heartbeat"></i> MediCore
+            </div>
+            <ul class="sidebar-menu" style="list-style: none; padding: 20px 0;">
+                <li style="padding: 15px 25px; background: #34495e;"><a href="#" style="color: white; text-decoration: none;"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li style="padding: 15px 25px;"><a href="book-appointment.html" style="color: #bdc3c7; text-decoration: none;"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
+                <li style="padding: 15px 25px;"><a href="#" style="color: #bdc3c7; text-decoration: none;"><i class="fas fa-file-medical-alt"></i> Medical Records</a></li>
+                <li style="padding: 15px 25px; margin-top: auto;"><a href="#" onclick="logout()" style="color: #e74c3c; text-decoration: none;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div id="current-date" style="color: #7f8c8d; font-weight: 500;"></div>
+                <div class="flex-row">
+                    <div style="text-align: right; margin-right: 15px;">
+                        <div id="patient-name-top" style="font-weight: bold; color: #2c3e50;">Loading...</div>
+                        <small style="color: #95a5a6;">Patient Account</small>
+                    </div>
+                    <img id="patient-img-top" src="" style="width: 40px; height: 40px; border-radius: 50%;">
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="welcome-banner">
+                    <h1 id="welcomeText" style="margin: 0 0 10px 0;">Welcome back!</h1>
+                    <p style="margin-bottom: 20px; opacity: 0.9;">Take control of your health. You can view your history or book a new checkup.</p>
+                    <a href="book-appointment.html" class="btn-sm btn-light">
+                        <i class="fas fa-plus"></i> Book New Appointment
+                    </a>
+                </div>
+
+                <h3 style="color: #2c3e50; margin-bottom: 20px;">Your Scheduled Visits</h3>
+                <div id="patient-appointments-container">
+                    <p style="text-align: center; padding: 20px;">Checking your appointments...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 1. Security & Initialization
+        const token = localStorage.getItem('token');
+        const userData = JSON.parse(localStorage.getItem('user'));
+
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Set Topbar Info
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+        document.getElementById('patient-name-top').innerText = userData.name;
+        document.getElementById('welcomeText').innerText = `Hello, ${userData.name.split(' ')[0]}!`;
+        document.getElementById('patient-img-top').src = `https://ui-avatars.com/api/?name=${userData.name}&background=007bff&color=fff`;
+
+        // 2. Load Patient's Appointments
+        async function loadPatientAppointments() {
+            try {
+                const res = await fetch('http://localhost:5002/api/appointments', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+
+                const container = document.getElementById('patient-appointments-container');
+                container.innerHTML = '';
+
+                // Filter appointments where THIS patient is involved
+                const myApps = result.data.filter(app => app.patient && app.patient._id === userData.id);
+
+                if (myApps.length === 0) {
+                    container.innerHTML = `
+                        <div style="background: white; padding: 40px; border-radius: 12px; text-align: center; color: #7f8c8d;">
+                            <i class="fas fa-calendar-times fa-3x" style="margin-bottom: 15px; color: #ddd;"></i>
+                            <p>You have no upcoming appointments.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                myApps.forEach(app => {
+                    const docName = app.doctor ? `Dr. ${app.doctor.name}` : 'Assigned Doctor';
+                    const docSpec = app.doctor ? app.doctor.specialization : 'General';
+                    const appDate = new Date(app.appointmentDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const appTime = new Date(app.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    container.innerHTML += `
+                        <div class="appointment-card">
+                            <div class="flex-row">
+                                <img src="https://ui-avatars.com/api/?name=${docName.replace('Dr. ', '')}&background=e3f2fd&color=1565c0" class="doc-img">
+                                <div>
+                                    <div style="font-weight: bold; color: #2c3e50;">${docName}</div>
+                                    <small style="color: #7f8c8d;">${docSpec} • ${app.reason}</small>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: bold; color: #28a745;">${appDate}</div>
+                                <small style="color: #7f8c8d;">at ${appTime}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Error loading patient dashboard:", err);
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        loadPatientAppointments();
+    </script>
+</body>
+</html>

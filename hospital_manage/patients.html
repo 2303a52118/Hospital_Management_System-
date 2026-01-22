@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients List | MediCore Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981; /* Emerald */
+            --secondary-bg: #d1fae5;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --text-gray: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.90);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+            --shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e2e8f0 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: var(--dark);
+        }
+
+        .dashboard-container { display: flex; height: 100%; }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 280px;
+            background: var(--dark);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.05);
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 10px 15px 40px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .sidebar-header i { color: var(--secondary); }
+
+        .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu li a:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu li.active a {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .sidebar-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .logout-btn { color: #f87171 !important; }
+
+        /* --- Main Content --- */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .topbar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.5);
+            position: sticky; top: 0; z-index: 10;
+        }
+
+        .user-profile {
+            display: flex; align-items: center; gap: 15px;
+            background: white; padding: 6px 15px 6px 6px;
+            border-radius: 50px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .user-info { text-align: right; line-height: 1.2; }
+        .user-name { font-weight: 600; font-size: 0.9rem; color: var(--dark); }
+        .user-role { font-size: 0.75rem; color: var(--secondary); font-weight: 500; }
+        .user-img { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #e2e8f0; }
+
+        .content-wrapper { padding: 40px; max-width: 1600px; margin: 0 auto; width: 100%; }
+
+        /* --- Header & Table Card --- */
+        .page-header {
+            display: flex; justify-content: space-between; align-items: end;
+            margin-bottom: 30px; animation: slideDown 0.6s ease-out;
+        }
+        .page-header h2 { font-size: 1.8rem; font-weight: 700; color: var(--dark); }
+        .page-header p { color: var(--text-gray); font-size: 0.95rem; }
+
+        .table-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: var(--glass-border);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* --- Table Styling --- */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+
+        th {
+            text-align: left; padding: 15px 20px;
+            color: var(--text-gray); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 20px; background: white;
+            border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
+            color: var(--dark); font-size: 0.95rem; vertical-align: middle;
+        }
+
+        td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; border-left: 1px solid #f1f5f9; }
+        td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-right: 1px solid #f1f5f9; }
+
+        tr:hover td { background: #f8fafc; transform: scale(1.005); transition: transform 0.2s; }
+
+        /* --- Custom Columns --- */
+        .patient-info { display: flex; align-items: center; gap: 15px; }
+        .patient-avatar { width: 45px; height: 45px; border-radius: 12px; object-fit: cover; }
+        .patient-text div:first-child { font-weight: 600; color: var(--dark); font-size: 1rem; }
+        .patient-text div:last-child { font-size: 0.85rem; color: var(--text-gray); }
+
+        .status-badge {
+            background: var(--secondary-bg); color: var(--secondary);
+            padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-heartbeat"></i> MediCore
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin-dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+                <li><a href="add-doctor.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                <li class="active"><a href="#"><i class="fas fa-user-injured"></i> Patients</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+                
+                <li class="sidebar-footer">
+                    <a href="#" onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div style="font-weight: 600; color: var(--text-gray); font-size: 0.9rem;">
+                    <i class="fas fa-users" style="margin-right:8px"></i> Patient Management
+                </div>
+                <div class="user-profile">
+                    <div class="user-info">
+                        <div class="user-name" id="adminName">Admin</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                    <img id="adminImg" class="user-img" src="" alt="Admin">
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <div>
+                        <h2>Registered Patients</h2>
+                        <p>View and manage all patient records.</p>
+                    </div>
+                    <button onclick="loadPatients()" style="background: white; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 10px; cursor: pointer; color: var(--primary); font-weight: 600; transition: all 0.2s;">
+                        <i class="fas fa-sync-alt"></i> Refresh List
+                    </button>
+                </div>
+
+                <div class="table-card">
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Patient Profile</th>
+                                    <th>Contact Email</th>
+                                    <th>Date Joined</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patients-list">
+                                <tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--text-gray);">Loading patients...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 1. Auth & Setup
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user')) || { name: 'Admin User' };
+
+        if (!token) {
+            // window.location.href = 'login.html'; // Uncomment for production
+            console.log("Demo Mode: No token");
+        }
+
+        // Set Header Info
+        document.getElementById('adminName').innerText = user.name;
+        document.getElementById('adminImg').src = `https://ui-avatars.com/api/?name=${user.name}&background=4f46e5&color=fff`;
+
+        // 2. Load Patients
+        async function loadPatients() {
+            console.log("🚀 Starting to fetch patients..."); 
+            const tbody = document.getElementById('patients-list');
+            
+            // Add loading spinner
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px; color: var(--text-gray);"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+            try {
+                const res = await fetch('http://localhost:5002/api/patients');
+                console.log("📡 Response Status:", res.status);
+
+                const data = await res.json();
+                console.log("📦 Data Received:", data);
+
+                tbody.innerHTML = ''; 
+
+                // Check if data array exists and has items
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">No patients registered yet.</td></tr>';
+                    return;
+                }
+
+                data.data.forEach(patient => {
+                    const joinedDate = patient.createdAt ? new Date(patient.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A';
+                    const name = patient.name || 'Unknown';
+                    const email = patient.email || 'No Email';
+                    
+                    const row = `
+                        <tr>
+                            <td>
+                                <div class="patient-info">
+                                    <img src="https://ui-avatars.com/api/?name=${name}&background=dcfce7&color=10b981" class="patient-avatar">
+                                    <div class="patient-text">
+                                        <div>${name}</div>
+                                        <div>#ID-${Math.floor(Math.random() * 10000)}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${email}</td>
+                            <td><i class="far fa-calendar-alt" style="margin-right:8px; color:#94a3b8;"></i> ${joinedDate}</td>
+                            <td><span class="status-badge">${patient.role || 'Patient'}</span></td>
+                            <td>
+                                <button style="border:none; background:none; cursor:pointer; color:var(--text-gray); font-size:1rem; padding:5px;">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (err) {
+                console.error("❌ CRITICAL ERROR:", err);
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 30px; color: #ef4444;">Error loading patient list. Is backend running?</td></tr>';
+            }
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        // Initial Load
+        loadPatients();
+    </script>
+</body>
+</html>
