@@ -4,146 +4,205 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Dashboard | MediCore</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CONSISTENT LAYOUT CSS */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+        :root{
+            --bg:#0b1120;
+            --bg-soft:#172554;
+            --card:rgba(15,23,42,0.68);
+            --border:rgba(255,255,255,0.14);
+            --text:#e2e8f0;
+            --muted:#94a3b8;
+            --primary:#6366f1;
+            --success:#10b981;
+            --warn:#f59e0b;
+            --danger:#ef4444;
         }
 
-        .dashboard-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
+        *{box-sizing:border-box;}
+        body,html{
+            margin:0;
+            padding:0;
+            min-height:100%;
+            font-family:Poppins,sans-serif;
+            color:var(--text);
+            background:
+                radial-gradient(900px circle at 12% 12%, rgba(99,102,241,0.24), transparent 42%),
+                radial-gradient(800px circle at 85% 90%, rgba(14,165,233,0.22), transparent 45%),
+                linear-gradient(145deg,var(--bg-soft),var(--bg));
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            min-width: 250px;
-            background: #2c3e50;
-            color: white;
-            display: flex;
-            flex-direction: column;
+        .dashboard-container{display:flex;min-height:100vh;}
+        .sidebar{
+            width:260px;
+            background:rgba(15,23,42,0.9);
+            border-right:1px solid var(--border);
+            padding:22px;
+            display:flex;
+            flex-direction:column;
+            backdrop-filter:blur(10px);
+        }
+        .brand{
+            color:#c7d2fe;
+            font-weight:700;
+            font-size:22px;
+            margin-bottom:26px;
+        }
+        .sidebar-menu{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
+        .sidebar-menu li a{
+            display:block;
+            padding:11px 12px;
+            border-radius:10px;
+            color:#cbd5e1;
+            text-decoration:none;
+            transition:.25s ease;
+        }
+        .sidebar-menu li a:hover{background:rgba(255,255,255,0.08);color:white;}
+        .sidebar-menu li.active a{
+            background:linear-gradient(135deg,#6366f1,#818cf8);
+            color:white;
+            box-shadow:0 10px 28px rgba(99,102,241,0.34);
         }
 
-        .main-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+        .main-content{flex:1;display:flex;flex-direction:column;}
+        .topbar{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:16px 26px;
+            border-bottom:1px solid var(--border);
+            background:rgba(15,23,42,0.48);
+            backdrop-filter:blur(8px);
+            position:sticky;
+            top:0;
+            z-index:10;
+        }
+        .content-wrapper{padding:24px;max-width:1100px;width:100%;margin:0 auto;}
+        .glass{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:16px;
+            backdrop-filter:blur(10px);
+        }
+        .welcome-banner{
+            padding:28px;
+            margin-bottom:24px;
+            box-shadow:0 16px 48px rgba(2,6,23,0.35);
+        }
+        .stat-row{
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:12px;
+            margin-bottom:20px;
+        }
+        .stat{
+            padding:14px;
+        }
+        .stat h4{margin:0 0 4px 0;font-size:12px;color:var(--muted);font-weight:500;}
+        .stat p{margin:0;font-size:24px;font-weight:700;}
+        .btn{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            border:none;
+            cursor:pointer;
+            text-decoration:none;
+            padding:10px 14px;
+            border-radius:10px;
+            font-weight:600;
+        }
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#818cf8);color:white;}
+        .appointments-title{margin:0 0 14px 0;}
+        .appointment-card{
+            padding:18px;
+            margin-bottom:12px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .doc-wrap{display:flex;align-items:center;gap:12px;}
+        .doc-img{width:52px;height:52px;border-radius:50%;background:#e2e8f0;}
+        .doc-name{font-weight:600;}
+        .doc-sub{font-size:13px;color:var(--muted);}
+        .status-chip{
+            display:inline-flex;
+            padding:4px 9px;
+            border-radius:999px;
+            font-size:11px;
+            margin-top:6px;
+            border:1px solid transparent;
+        }
+        .status-pending{background:rgba(245,158,11,0.18);color:#fcd34d;border-color:rgba(245,158,11,.45);}
+        .status-accepted{background:rgba(16,185,129,0.18);color:#6ee7b7;border-color:rgba(16,185,129,.45);}
+        .status-rejected{background:rgba(239,68,68,0.18);color:#fca5a5;border-color:rgba(239,68,68,.45);}
+        .empty{
+            text-align:center;
+            padding:42px;
+            color:var(--muted);
+        }
+        @media (max-width: 900px){
+            .sidebar{display:none;}
+            .stat-row{grid-template-columns:1fr;}
+            .appointment-card{flex-direction:column;align-items:flex-start;gap:10px;}
         }
 
-        .content-wrapper {
-            padding: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* Topbar */
-        .topbar {
-            background: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        /* Cards & Banners */
-        .welcome-banner {
-            background: linear-gradient(135deg, #28a745, #218838);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
-        }
-
-        .appointment-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-left: 5px solid #007bff; /* Blue for patients */
-        }
-
-        .flex-row { display: flex; align-items: center; }
-        .btn-sm { padding: 10px 18px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; text-decoration: none; }
-        .btn-primary { background: #007bff; color: white; }
-        .btn-light { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; }
-        .btn-danger { background: #ff4d4d; color: white; margin-left: 10px; }
-
-        .doc-img { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; background: #eee; }
-
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-        }
+        /* Consistency sweep */
+        :root { --ui-radius: 14px; --ui-shadow: 0 10px 28px rgba(15,23,42,0.12); }
+        .card, .table-card, .form-card, .auth-card, .appointment-card, .stat-card, .doctor-pill, .btn, .btn-primary, .btn-sm, .refresh-btn, .menu-item, .sidebar-menu li a, .role-switch button, .user-profile, input, select, textarea { border-radius: var(--ui-radius) !important; }
+        .card, .table-card, .form-card, .auth-card, .appointment-card, .stat-card, .user-profile { box-shadow: var(--ui-shadow) !important; }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <aside class="sidebar">
-            <div class="sidebar-header" style="padding: 25px; font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid #3e4f5f;">
-                <i class="fas fa-heartbeat"></i> MediCore
-            </div>
-            <ul class="sidebar-menu" style="list-style: none; padding: 20px 0;">
-                <li style="padding: 15px 25px; background: #34495e;"><a href="#" style="color: white; text-decoration: none;"><i class="fas fa-th-large"></i> Dashboard</a></li>
-                <li style="padding: 15px 25px;"><a href="book-appointment.html" style="color: #bdc3c7; text-decoration: none;"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
-                <li style="padding: 15px 25px;"><a href="#" style="color: #bdc3c7; text-decoration: none;"><i class="fas fa-file-medical-alt"></i> Medical Records</a></li>
-                <li style="padding: 15px 25px; margin-top: auto;"><a href="#" onclick="logout()" style="color: #e74c3c; text-decoration: none;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <div class="brand"><i class="fas fa-heartbeat"></i> MediCore</div>
+            <ul class="sidebar-menu">
+                <li class="active"><a href="#"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="book-appointment.html"><i class="fas fa-calendar-plus"></i> Book Appointment</a></li>
+                <li><a href="#"><i class="fas fa-file-medical-alt"></i> Medical Records</a></li>
+                <li style="margin-top:auto;"><a href="#" onclick="logout()" style="color:#fca5a5;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </aside>
 
         <main class="main-content">
             <header class="topbar">
-                <div id="current-date" style="color: #7f8c8d; font-weight: 500;"></div>
-                <div class="flex-row">
-                    <div style="text-align: right; margin-right: 15px;">
-                        <div id="patient-name-top" style="font-weight: bold; color: #2c3e50;">Loading...</div>
-                        <small style="color: #95a5a6;">Patient Account</small>
+                <div id="current-date" style="color: var(--muted); font-weight: 500;"></div>
+                <div style="display:flex;align-items:center;">
+                    <div style="text-align: right; margin-right: 12px;">
+                        <div id="patient-name-top" style="font-weight: 600;">Loading...</div>
+                        <small style="color: var(--muted);">Patient Account</small>
                     </div>
                     <img id="patient-img-top" src="" style="width: 40px; height: 40px; border-radius: 50%;">
                 </div>
             </header>
 
             <div class="content-wrapper">
-                <div class="welcome-banner">
+                <div class="welcome-banner glass">
                     <h1 id="welcomeText" style="margin: 0 0 10px 0;">Welcome back!</h1>
-                    <p style="margin-bottom: 20px; opacity: 0.9;">Take control of your health. You can view your history or book a new checkup.</p>
-                    <a href="book-appointment.html" class="btn-sm btn-light">
+                    <p style="margin-bottom: 18px; color:#bfdbfe;">Track appointments and stay connected with your doctor schedule.</p>
+                    <a href="book-appointment.html" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Book New Appointment
                     </a>
                 </div>
 
-                <h3 style="color: #2c3e50; margin-bottom: 20px;">Your Scheduled Visits</h3>
+                <div class="stat-row">
+                    <div class="stat glass"><h4>Total Appointments</h4><p id="totalApps">0</p></div>
+                    <div class="stat glass"><h4>Accepted</h4><p id="acceptedApps">0</p></div>
+                    <div class="stat glass"><h4>Pending</h4><p id="pendingApps">0</p></div>
+                </div>
+
+                <h3 class="appointments-title">Your Scheduled Visits</h3>
                 <div id="patient-appointments-container">
-                    <p style="text-align: center; padding: 20px;">Checking your appointments...</p>
+                    <p class="empty glass">Checking your appointments...</p>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // 1. Security & Initialization
         const token = localStorage.getItem('token');
-        const userData = JSON.parse(localStorage.getItem('user'));
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
 
         if (!token) {
             window.location.href = 'login.html';
@@ -151,9 +210,10 @@
 
         // Set Topbar Info
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-        document.getElementById('patient-name-top').innerText = userData.name;
-        document.getElementById('welcomeText').innerText = `Hello, ${userData.name.split(' ')[0]}!`;
-        document.getElementById('patient-img-top').src = `https://ui-avatars.com/api/?name=${userData.name}&background=007bff&color=fff`;
+        const safeName = userData.name || "Patient";
+        document.getElementById('patient-name-top').innerText = safeName;
+        document.getElementById('welcomeText').innerText = `Hello, ${safeName.split(' ')[0]}!`;
+        document.getElementById('patient-img-top').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(safeName)}&background=6366f1&color=fff`;
 
         // 2. Load Patient's Appointments
         async function loadPatientAppointments() {
@@ -166,13 +226,18 @@
                 const container = document.getElementById('patient-appointments-container');
                 container.innerHTML = '';
 
-                // Filter appointments where THIS patient is involved
-                const myApps = result.data.filter(app => app.patient && app.patient._id === userData.id);
+                const data = Array.isArray(result.data) ? result.data : [];
+                const myApps = data.filter(app => app.patient && app.patient._id === userData.id);
+                const accepted = myApps.filter(a => a.status === "accepted").length;
+                const pending = myApps.filter(a => a.status === "pending").length;
+                document.getElementById("totalApps").innerText = myApps.length;
+                document.getElementById("acceptedApps").innerText = accepted;
+                document.getElementById("pendingApps").innerText = pending;
 
                 if (myApps.length === 0) {
                     container.innerHTML = `
-                        <div style="background: white; padding: 40px; border-radius: 12px; text-align: center; color: #7f8c8d;">
-                            <i class="fas fa-calendar-times fa-3x" style="margin-bottom: 15px; color: #ddd;"></i>
+                        <div class="empty glass">
+                            <i class="fas fa-calendar-times fa-3x" style="margin-bottom: 15px; color: #64748b;"></i>
                             <p>You have no upcoming appointments.</p>
                         </div>
                     `;
@@ -184,19 +249,29 @@
                     const docSpec = app.doctor ? app.doctor.specialization : 'General';
                     const appDate = new Date(app.appointmentDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                     const appTime = new Date(app.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const slot = app.doctor?.availabilityStart && app.doctor?.availabilityEnd
+                        ? `${app.doctor.availabilityStart} - ${app.doctor.availabilityEnd}`
+                        : "N/A";
+                    const statusClass = app.status === "accepted"
+                        ? "status-accepted"
+                        : app.status === "pending"
+                        ? "status-pending"
+                        : "status-rejected";
 
                     container.innerHTML += `
-                        <div class="appointment-card">
-                            <div class="flex-row">
-                                <img src="https://ui-avatars.com/api/?name=${docName.replace('Dr. ', '')}&background=e3f2fd&color=1565c0" class="doc-img">
+                        <div class="appointment-card glass">
+                            <div class="doc-wrap">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(docName.replace('Dr. ', ''))}&background=e3f2fd&color=1565c0" class="doc-img">
                                 <div>
-                                    <div style="font-weight: bold; color: #2c3e50;">${docName}</div>
-                                    <small style="color: #7f8c8d;">${docSpec} • ${app.reason}</small>
+                                    <div class="doc-name">${docName}</div>
+                                    <div class="doc-sub">${docSpec} • ${app.reason}</div>
+                                    <span class="status-chip ${statusClass}">${app.status}</span>
                                 </div>
                             </div>
                             <div style="text-align: right;">
-                                <div style="font-weight: bold; color: #28a745;">${appDate}</div>
-                                <small style="color: #7f8c8d;">at ${appTime}</small>
+                                <div style="font-weight: 700; color: #86efac;">${appDate}</div>
+                                <small style="color: var(--muted);">at ${appTime}</small><br>
+                                <small style="color: #93c5fd;">Doctor Slot: ${slot}</small>
                             </div>
                         </div>
                     `;

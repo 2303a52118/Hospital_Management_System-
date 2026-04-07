@@ -247,6 +247,11 @@
             .input-grid { grid-template-columns: 1fr; }
             .main-content { padding: 20px; }
         }
+
+        /* Consistency sweep */
+        :root { --ui-radius: 14px; --ui-shadow: 0 10px 28px rgba(15,23,42,0.12); }
+        .card, .table-card, .form-card, .auth-card, .appointment-card, .stat-card, .doctor-pill, .btn, .btn-primary, .btn-sm, .refresh-btn, .menu-item, .sidebar-menu li a, .role-switch button, .user-profile, input, select, textarea { border-radius: var(--ui-radius) !important; }
+        .card, .table-card, .form-card, .auth-card, .appointment-card, .stat-card, .user-profile { box-shadow: var(--ui-shadow) !important; }
     </style>
 </head>
 <body>
@@ -260,8 +265,8 @@
             <ul class="sidebar-menu">
                 <li><a href="admin-dashboard.html"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
                 <li class="active"><a href="#"><i class="fas fa-user-plus"></i> Add Doctor</a></li>
-                <li><a href="#"><i class="fas fa-user-injured"></i> Patients</a></li>
-                <li><a href="#"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+                <li><a href="patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
                 
                 <li class="sidebar-footer">
                     <a href="#" onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>

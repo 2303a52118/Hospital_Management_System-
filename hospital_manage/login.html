@@ -1,299 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | MediCore HMS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCore HMS</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --bg:#020617;
+    --bg-soft:#0f172a;
+    --card:rgba(15, 23, 42, 0.62);
+    --card-strong:rgba(15, 23, 42, 0.86);
+    --border:rgba(255,255,255,0.16);
+    --primary:#6366F1;
+    --primary-light:#818CF8;
+    --accent:#22D3EE;
+    --text:#E5E7EB;
+    --muted:#9CA3AF;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+        radial-gradient(900px circle at 12% 16%, rgba(99,102,241,0.24), transparent 42%),
+        radial-gradient(700px circle at 88% 84%, rgba(34,211,238,0.2), transparent 48%),
+        linear-gradient(145deg, var(--bg-soft), var(--bg));
+    color:var(--text);
+    position:relative;
+    overflow:hidden;
+}
+
+body::before,
+body::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    filter:blur(85px);
+    opacity:0.45;
+    z-index:0;
+    animation:float 10s ease-in-out infinite alternate;
+}
+
+body::before{
+    width:260px;
+    height:260px;
+    background:var(--primary-light);
+    top:-70px;
+    left:-70px;
+}
+
+body::after{
+    width:320px;
+    height:320px;
+    background:var(--accent);
+    bottom:-110px;
+    right:-90px;
+}
+
+@keyframes float{
+    from{transform:translateY(0);}
+    to{transform:translateY(18px);}
+}
+
+/* ROLE BUTTONS */
+.role-switch {
+    position:absolute;
+    top:28px;
+    left:28px;
+    z-index:2;
+    display:flex;
+    gap:10px;
+    background:rgba(15, 23, 42, 0.6);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:6px;
+    backdrop-filter:blur(12px);
+}
+
+.role-switch button {
     
-    <style>
-        :root {
-            /* --- MIDNIGHT GOLD THEME --- */
-            --primary: #D4AF37;       /* Metallic Gold */
-            --primary-dark: #B59021;  /* Deep Gold */
-            --secondary: #0F172A;     /* Midnight Blue (Dark Accent) */
-            
-            --text-dark: #1e293b;
-            --text-light: #64748b;
-            
-            /* Glass Effect colors */
-            --glass-bg: rgba(255, 255, 255, 0.90);
-            --glass-border: 1px solid rgba(212, 175, 55, 0.3); /* Gold border hint */
-        }
+    padding:9px 16px;
+    border:none;
+    border-radius:999px;
+    background:transparent;
+    color:white;
+    cursor:pointer;
+    transition:0.25s ease;
+    font-weight:500;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+.role-switch button.active {
+    background:linear-gradient(135deg,#6366F1,#818CF8);
+    box-shadow:0 10px 24px rgba(99,102,241,0.32);
+}
 
-        body {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Midnight Gradient Background */
-            background: linear-gradient(135deg, #0F172A 0%, #1e293b 100%);
-            position: relative;
-            overflow: hidden;
-        }
+.role-switch button:hover:not(.active){
+    background:rgba(255,255,255,0.08);
+}
 
-        /* Blobs adapted for Dark Background */
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 10s infinite ease-in-out;
-        }
-        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #D4AF37; animation-delay: 0s; }
-        .blob-2 { bottom: -10%; right: -10%; width: 500px; height: 500px; background: #B59021; animation-delay: 5s; }
+/* CARD */
+.auth-card{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:440px;
+    background:linear-gradient(150deg, var(--card), var(--card-strong));
+    border:1px solid var(--border);
+    backdrop-filter:blur(24px);
+    border-radius:24px;
+    padding:34px 30px 28px;
+    text-align:left;
+    box-shadow:
+        0 24px 80px rgba(0,0,0,0.58),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+}
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(20px) scale(1.1); }
-        }
+.brand-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 12px;
+    border-radius:999px;
+    border:1px solid rgba(129,140,248,0.5);
+    background:rgba(99,102,241,0.14);
+    color:#c7d2fe;
+    font-size:12px;
+    margin-bottom:14px;
+    letter-spacing:0.3px;
+}
 
-        /* --- Glass Card --- */
-        .auth-card {
-            width: 100%;
-            max-width: 420px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: var(--glass-border);
-            border-radius: 24px;
-            padding: 50px 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4); /* Darker shadow for depth */
-            animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-            text-align: center;
-            margin: 20px;
-        }
+.auth-card h2{
+    font-size:30px;
+    margin-bottom:4px;
+}
 
-        .auth-header { margin-bottom: 35px; }
-        .logo-icon {
-            font-size: 2.5rem;
-            color: var(--primary);
-            background: rgba(15, 23, 42, 0.05); /* Subtle midnight tint */
-            width: 70px; height: 70px;
-            line-height: 70px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); /* Gold glow */
-            border: 1px solid rgba(212, 175, 55, 0.2);
-        }
-        
-        .auth-header h2 { color: var(--text-dark); font-weight: 700; margin-bottom: 8px; font-size: 1.8rem; }
-        .auth-header p { color: var(--text-light); font-size: 0.95rem; }
+.subtitle{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:22px;
+}
 
-        /* --- Form --- */
-        .input-group { position: relative; margin-bottom: 25px; text-align: left; }
-        .input-wrapper { position: relative; }
+/* INPUT */
+.input-group{margin-bottom:15px;text-align:left;}
 
-        .input-wrapper input {
-            width: 100%;
-            padding: 14px 20px 14px 45px;
-            background: #f8fafc;
-            border: 2px solid transparent;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            color: var(--text-dark);
-            transition: all 0.3s ease;
-            outline: none;
-        }
+.input-wrapper{position:relative;}
 
-        .input-wrapper i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            transition: color 0.3s;
-        }
+.input-wrapper input{
+    width:100%;
+    padding:13px 14px 13px 42px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--border);
+    border-radius:12px;
+    color:var(--text);
+    transition:0.25s ease;
+}
 
-        .input-wrapper input:focus {
-            background: white;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15); /* Gold focus ring */
-        }
+.input-wrapper input::placeholder{
+    color:#8fa0b7;
+}
 
-        .input-wrapper input:focus + i { color: var(--primary); }
+.input-wrapper input:focus{
+    outline:none;
+    border-color:rgba(129,140,248,0.88);
+    background:rgba(129,140,248,0.12);
+    box-shadow:0 0 0 3px rgba(99,102,241,0.2);
+}
 
-        /* --- Gold Button --- */
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            /* Gradient from Gold to Deep Gold */
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); /* Gold shadow */
-            position: relative;
-            overflow: hidden;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
+.input-wrapper i{
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--muted);
+    transition:0.2s ease;
+}
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
-        }
+.input-wrapper:focus-within i{
+    color:#c7d2fe;
+}
 
-        .auth-footer { margin-top: 30px; font-size: 0.9rem; color: var(--text-light); }
-        .auth-footer a { color: var(--primary-dark); text-decoration: none; font-weight: 700; transition: color 0.2s; }
-        .auth-footer a:hover { color: var(--primary); text-decoration: underline; }
-        
-        .back-home { display: block; margin-top: 15px; font-size: 0.85rem; color: #94a3b8 !important; }
-        .back-home:hover { color: var(--text-dark) !important; text-decoration: none !important; }
+.form-meta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--muted);
+    margin:8px 0 16px;
+}
 
-        /* --- Toast Notification (Updated Colors) --- */
-        #toast-container { position: fixed; top: 30px; right: 30px; z-index: 1000; }
-        .toast {
-            min-width: 300px;
-            background: white;
-            color: var(--text-dark);
-            border-left: 5px solid var(--primary); /* Gold Left Border */
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            font-weight: 500;
-            display: flex; align-items: center; gap: 12px;
-            opacity: 0; transform: translateX(50px);
-            transition: all 0.5s;
-        }
-        .toast.show { opacity: 1; transform: translateX(0); }
-        .toast.error { border-color: #ef4444; }
-        .toast.error i { color: #ef4444; }
-        .toast i { color: var(--primary); font-size: 1.2rem; }
+.remember{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    cursor:pointer;
+}
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .btn-loading i { animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-    </style>
+.remember input{
+    accent-color:var(--primary-light);
+}
+
+.meta-link{
+    color:#c4b5fd;
+    text-decoration:none;
+}
+
+.meta-link:hover{
+    text-decoration:underline;
+}
+
+/* BUTTON */
+.btn{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#6366F1,#818CF8);
+    color:white;
+    cursor:pointer;
+    font-weight:600;
+    letter-spacing:0.3px;
+    transition:0.25s ease;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(99,102,241,0.4);
+}
+
+/* TOGGLE */
+.toggle{
+    margin-top:18px;
+    color:var(--muted);
+    cursor:pointer;
+    text-align:center;
+    font-size:13px;
+}
+
+.toggle strong{
+    color:#c7d2fe;
+    font-weight:600;
+}
+
+.toggle:hover strong{
+    text-decoration:underline;
+}
+
+/* TOAST */
+#toast-container{
+    position:fixed;
+    top:20px;
+    right:20px;
+}
+
+.toast{
+    background:#111827;
+    color:white;
+    padding:12px 16px;
+    border-radius:8px;
+    margin-bottom:10px;
+    opacity:0;
+    transform:translateX(50px);
+    transition:0.3s;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateX(0);
+}
+
+.toast.success{border-left:4px solid #22c55e;}
+.toast.error{border-left:4px solid #ef4444;}
+
+@media (max-width:640px){
+    .role-switch{
+        top:14px;
+        left:14px;
+        right:14px;
+        justify-content:space-between;
+    }
+    .role-switch button{
+        flex:1;
+        padding:8px 6px;
+        font-size:12px;
+    }
+    .auth-card{
+        margin:84px 14px 0;
+        padding:28px 20px 24px;
+    }
+    .auth-card h2{
+        font-size:25px;
+    }
+}
+
+/* Consistency sweep */
+:root { --ui-radius: 14px; --ui-shadow: 0 10px 28px rgba(15,23,42,0.12); }
+.card, .table-card, .form-card, .auth-card, .appointment-card, .stat-card, .doctor-pill, .btn, .btn-primary, .btn-sm, .refresh-btn, .menu-item, .sidebar-menu li a, .role-switch button, .user-profile, input, select, textarea { border-radius: var(--ui-radius) !important; }
+.card, .table-card, .form-card, .auth-card, .appointment-card, .stat-card, .user-profile { box-shadow: var(--ui-shadow) !important; }
+</style>
 </head>
+
 <body>
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
 
-    <div id="toast-container"></div>
+<div id="toast-container"></div>
 
-    <div class="auth-card">
-        <div class="auth-header">
-            <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
-            <h2>Welcome Back</h2>
-            <p>Sign in to manage your health journey</p>
-        </div>
-        
-        <form id="loginForm">
-            <div class="input-group">
-                <div class="input-wrapper">
-                    <input type="email" id="email" placeholder="Email Address" required>
-                    <i class="fas fa-envelope"></i>
-                </div>
-            </div>
+<!-- ROLE BUTTONS -->
+<div class="role-switch">
+    <button id="adminBtn" onclick="setRole('admin',this)">Admin</button>
+    <button id="doctorBtn" onclick="setRole('doctor',this)">Doctor</button>
+    <button id="patientBtn" class="active" onclick="setRole('patient',this)">Patient</button>
+</div>
 
-            <div class="input-group">
-                <div class="input-wrapper">
-                    <input type="password" id="password" placeholder="Password" required>
-                    <i class="fas fa-lock"></i>
-                </div>
-            </div>
+<div class="auth-card">
 
-            <button type="submit" class="btn-primary" id="submitBtn">
-                Sign In
-            </button>
-        </form>
+<span class="brand-badge"><i class="fa-solid fa-shield-heart"></i> MediCore Secure Access</span>
+<h2 id="title">Login</h2>
+<p class="subtitle">Welcome back. Access your hospital portal in seconds.</p>
 
-        <div class="auth-footer">
-            <p>New Patient? <a href="register.html">Create Account</a></p>
-            <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
-        </div>
+<form id="form">
+
+<!-- NAME (REGISTER ONLY) -->
+<div class="input-group" id="nameField" style="display:none;">
+    <div class="input-wrapper">
+        <input type="text" id="name" placeholder="Full Name">
+        <i class="fas fa-user"></i>
     </div>
+</div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const btn = document.getElementById('submitBtn');
-            const originalText = btn.innerHTML;
-            
-            // Set Loading State
-            btn.innerHTML = '<span class="btn-loading"><i class="fas fa-spinner"></i> Signing In...</span>';
-            btn.style.opacity = '0.7';
-            btn.disabled = true;
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+<div class="input-group">
+    <div class="input-wrapper">
+        <input type="email" id="email" placeholder="Email" required>
+        <i class="fas fa-envelope"></i>
+    </div>
+</div>
 
-            try {
-                // Remove this timeout in production (just for effect)
-                // await new Promise(r => setTimeout(r, 600));
+<div class="input-group">
+    <div class="input-wrapper">
+        <input type="password" id="password" placeholder="Password" required>
+        <i class="fas fa-lock"></i>
+    </div>
+</div>
 
-                const res = await fetch('http://localhost:5002/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
+<div class="form-meta">
+    <label class="remember"><input type="checkbox"> Remember me</label>
+    <a href="#" class="meta-link">Forgot Password?</a>
+</div>
 
-                const data = await res.json();
+<button class="btn" id="submitBtn">Login</button>
 
-                if (data.success) {
-                    showToast('Login Successful!', 'success');
-                    
-                    // Store Token and User Info
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+</form>
 
-                    // Redirect based on role
-                    setTimeout(() => {
-                        const role = data.user.role;
-                        if (role === 'admin') window.location.href = 'admin-dashboard.html';
-                        else if (role === 'doctor') window.location.href = 'doctor-dashboard.html';
-                        else window.location.href = 'patient-dashboard.html';
-                    }, 1000);
-                } else {
-                    showToast(data.message || 'Invalid credentials', 'error');
-                    resetBtn(btn, originalText);
-                }
-            } catch (err) {
-                console.error("Login error:", err);
-                showToast('Server connection failed', 'error');
-                resetBtn(btn, originalText);
-            }
+<div class="toggle" onclick="toggleForm()">
+    New here? <strong>Switch to Register</strong>
+</div>
+
+</div>
+
+<script>
+let isLogin = true;
+let selectedRole = "patient";
+
+/* ROLE SELECT */
+function setRole(role,btn){
+    selectedRole = role;
+
+    document.querySelectorAll(".role-switch button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+
+    showToast("Selected: " + role, "success");
+}
+
+/* TOGGLE LOGIN/REGISTER */
+function toggleForm(){
+    isLogin = !isLogin;
+
+    document.getElementById("title").innerText = isLogin ? "Login" : "Register";
+    document.getElementById("submitBtn").innerText = isLogin ? "Login" : "Register";
+    document.getElementById("nameField").style.display = isLogin ? "none" : "block";
+    document.querySelector(".subtitle").innerText = isLogin
+        ? "Welcome back. Access your hospital portal in seconds."
+        : "Create your account to begin managing appointments and records.";
+    document.querySelector(".toggle").innerHTML = isLogin
+        ? "New here? <strong>Switch to Register</strong>"
+        : "Already have an account? <strong>Switch to Login</strong>";
+}
+
+/* FORM SUBMIT */
+document.getElementById("form").addEventListener("submit", async(e)=>{
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const name = document.getElementById("name").value;
+
+    const url = isLogin 
+        ? "http://localhost:5002/api/auth/login"
+        : "http://localhost:5002/api/auth/register";
+
+    const body = isLogin
+        ? {email,password}
+        : {name,email,password,role:selectedRole};
+
+    try{
+        const res = await fetch(url,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(body)
         });
 
-        function resetBtn(btn, originalText) {
-            btn.innerHTML = originalText;
-            btn.style.opacity = '1';
-            btn.disabled = false;
+        const data = await res.json();
+
+        if(data.success){
+            showToast("Success!", "success");
+
+            if(isLogin){
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("user", JSON.stringify(data.user));
+
+                setTimeout(()=>{
+                    const role = data.user.role;
+                    if(role==="admin") window.location.href="admin-dashboard.html";
+                    else if(role==="doctor") window.location.href="doctor-dashboard.html";
+                    else window.location.href="patient-dashboard.html";
+                },1000);
+            } else {
+                toggleForm();
+            }
+
+        } else {
+            showToast(data.message || "Error", "error");
         }
 
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            const icon = type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
-            
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `${icon} <span>${message}</span>`;
-            
-            container.appendChild(toast);
-            
-            requestAnimationFrame(() => { toast.classList.add('show'); });
+    } catch{
+        showToast("Server error", "error");
+    }
+});
 
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => { container.removeChild(toast); }, 600);
-            }, 3000);
-        }
-    </script>
+/* TOAST */
+function showToast(msg,type){
+    const t=document.createElement("div");
+    t.className="toast "+type;
+    t.innerText=msg;
+
+    const container=document.getElementById("toast-container");
+    container.appendChild(t);
+
+    setTimeout(()=>t.classList.add("show"),50);
+
+    setTimeout(()=>{
+        t.classList.remove("show");
+        setTimeout(()=>t.remove(),300);
+    },3000);
+}
+</script>
+
 </body>
 </html>

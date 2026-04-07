@@ -166,6 +166,50 @@
         font-size: 0.95rem;
     }
 
+    .slot-info {
+        margin-top: 8px;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 0.88rem;
+        border: 1px solid #dbeafe;
+        background: #eff6ff;
+        color: #1e3a8a;
+    }
+
+    .slot-info.ok {
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+        color: #065f46;
+    }
+
+    .slot-info.warn {
+        background: #fff7ed;
+        border-color: #fed7aa;
+        color: #9a3412;
+    }
+
+    .quick-slots {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .slot-chip {
+        border: 1px solid #bfdbfe;
+        background: #f8fbff;
+        color: #1e3a8a;
+        border-radius: 999px;
+        padding: 6px 11px;
+        font-size: 0.78rem;
+        cursor: pointer;
+        transition: 0.25s;
+    }
+
+    .slot-chip:hover {
+        background: #dbeafe;
+    }
+
     .input-group input:focus,
     .input-group select:focus,
     .input-group textarea:focus {
@@ -227,6 +271,11 @@
         .sidebar { display: none; }
         .main-content { padding: 20px; }
     }
+
+    /* Consistency sweep */
+    :root { --ui-radius: 14px; --ui-shadow: 0 10px 28px rgba(15,23,42,0.12); }
+    .card, .table-card, .form-card, .auth-card, .appointment-card, .stat-card, .doctor-pill, .btn, .btn-primary, .btn-sm, .refresh-btn, .menu-item, .sidebar-menu li a, .role-switch button, .user-profile, input, select, textarea { border-radius: var(--ui-radius) !important; }
+    .card, .table-card, .form-card, .auth-card, .appointment-card, .stat-card, .user-profile { box-shadow: var(--ui-shadow) !important; }
 </style>
 
 </head>
@@ -265,11 +314,13 @@
                         <select id="doctorSelect" required>
                             <option value="">Searching for available doctors...</option>
                         </select>
+                        <div id="doctorSlotInfo" class="slot-info">Select a doctor to view available booking slot.</div>
                     </div>
 
                     <div class="input-group">
                         <label>Preferred Date</label>
                         <input type="datetime-local" id="app-date" required>
+                        <div id="quickSlots" class="quick-slots"></div>
                     </div>
 
                     <div class="input-group">
@@ -288,6 +339,7 @@
     <script>
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user'));
+        const doctorsById = {};
 
         if (!token) {
             // window.location.href = 'login.html'; 
@@ -305,6 +357,7 @@
 
                 if(data.data && data.data.length > 0) {
                     data.data.forEach(doc => {
+                        doctorsById[doc._id] = doc;
                         const option = document.createElement('option');
                         option.value = doc._id; 
                         option.text = `Dr. ${doc.name} (${doc.specialization || 'General'})`;
@@ -318,6 +371,106 @@
                 select.innerHTML = '<option value="">Error loading doctors</option>';
             }
         }
+
+        function parseTimeToMinutes(time) {
+            const [h, m] = String(time || "00:00").split(":");
+            return (Number(h || 0) * 60) + Number(m || 0);
+        }
+
+        function getSelectedDoctorSlot() {
+            const doctorId = document.getElementById('doctorSelect').value;
+            const doc = doctorsById[doctorId];
+            if (!doc) return null;
+            return {
+                start: doc.availabilityStart || "09:00",
+                end: doc.availabilityEnd || "17:00",
+                name: doc.name || "Doctor"
+            };
+        }
+
+        function formatTimeFromMinutes(totalMinutes) {
+            const h = String(Math.floor(totalMinutes / 60)).padStart(2, "0");
+            const m = String(totalMinutes % 60).padStart(2, "0");
+            return `${h}:${m}`;
+        }
+
+        function setDateTimeToSlot(timeStr) {
+            const dateInput = document.getElementById('app-date');
+            const dateValue = dateInput.value ? new Date(dateInput.value) : new Date();
+            dateValue.setSeconds(0, 0);
+            const [h, m] = timeStr.split(":").map(Number);
+            dateValue.setHours(h, m, 0, 0);
+            const local = new Date(dateValue.getTime() - dateValue.getTimezoneOffset() * 60000)
+                .toISOString()
+                .slice(0, 16);
+            dateInput.value = local;
+            validateChosenDateTime(false);
+        }
+
+        function renderQuickSlots() {
+            const slot = getSelectedDoctorSlot();
+            const container = document.getElementById("quickSlots");
+            container.innerHTML = "";
+
+            if (!slot) return;
+
+            const start = parseTimeToMinutes(slot.start);
+            const end = parseTimeToMinutes(slot.end);
+
+            if (end <= start) return;
+
+            for (let t = start; t <= end; t += 30) {
+                const label = formatTimeFromMinutes(t);
+                const chip = document.createElement("button");
+                chip.type = "button";
+                chip.className = "slot-chip";
+                chip.innerText = label;
+                chip.onclick = () => setDateTimeToSlot(label);
+                container.appendChild(chip);
+            }
+        }
+
+        function validateChosenDateTime(showMessage = true) {
+            const slotInfo = document.getElementById('doctorSlotInfo');
+            const selectedDate = document.getElementById('app-date').value;
+            const slot = getSelectedDoctorSlot();
+
+            if (!slot) {
+                slotInfo.className = "slot-info";
+                slotInfo.innerText = "Select a doctor to view available booking slot.";
+                return false;
+            }
+
+            if (!selectedDate) {
+                slotInfo.className = "slot-info";
+                slotInfo.innerText = `Dr. ${slot.name} is available from ${slot.start} to ${slot.end}.`;
+                return true;
+            }
+
+            const selected = new Date(selectedDate);
+            const selectedMinutes = selected.getHours() * 60 + selected.getMinutes();
+            const startMinutes = parseTimeToMinutes(slot.start);
+            const endMinutes = parseTimeToMinutes(slot.end);
+
+            if (selectedMinutes >= startMinutes && selectedMinutes <= endMinutes) {
+                slotInfo.className = "slot-info ok";
+                slotInfo.innerText = `Selected time is within Dr. ${slot.name}'s slot (${slot.start} - ${slot.end}).`;
+                return true;
+            }
+
+            slotInfo.className = "slot-info warn";
+            slotInfo.innerText = `Selected time is outside Dr. ${slot.name}'s slot (${slot.start} - ${slot.end}). Choose a valid time.`;
+            if (showMessage) {
+                showToast(`Please choose time between ${slot.start} and ${slot.end}.`, 'error');
+            }
+            return false;
+        }
+
+        document.getElementById('doctorSelect').addEventListener('change', () => {
+            renderQuickSlots();
+            validateChosenDateTime(false);
+        });
+        document.getElementById('app-date').addEventListener('change', () => validateChosenDateTime(false));
 
         // 2. Submit Booking
         document.getElementById('bookAppointmentForm').addEventListener('submit', async (e) => {
@@ -334,6 +487,12 @@
                 appointmentDate: document.getElementById('app-date').value,
                 reason: document.getElementById('app-reason').value
             };
+
+            if (!validateChosenDateTime(true)) {
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+                return;
+            }
 
             try {
                 // Simulate network

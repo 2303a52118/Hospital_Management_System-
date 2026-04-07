@@ -41,3 +41,9 @@ app.use("/api/auth", authRoutes); // ✅ Added Auth Endpoint
 
 // EXPORT APP (IMPORTANT)
 module.exports = app;
+// ====== START SERVER ======
+const PORT = process.env.PORT || 5002;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

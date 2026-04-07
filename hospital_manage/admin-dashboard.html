@@ -267,6 +267,12 @@
             .topbar { padding: 15px 20px; }
             .stats-grid { grid-template-columns: 1fr; }
         }
+
+        /* Consistency sweep */
+        :root { --ui-radius: 14px; --ui-shadow: 0 10px 28px rgba(15,23,42,0.12); }
+        .card, .stat-card, .management-section, .refresh-btn, .btn-add, .user-profile, .sidebar-menu li a { border-radius: var(--ui-radius) !important; }
+        .stat-card, .management-section, .user-profile { box-shadow: var(--ui-shadow) !important; }
+        .content-wrapper { padding-top: 34px; padding-bottom: 34px; }
     </style>
 </head>
 <body>

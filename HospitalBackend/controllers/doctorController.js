@@ -52,3 +52,70 @@ exports.getAllDoctors = async (req, res) => {
     });
   }
 };
+
+// @desc    Get logged in doctor profile with availability
+// @route   GET /api/doctors/me
+// @access  Doctor
+exports.getMyDoctorProfile = async (req, res) => {
+  try {
+    const doctor = await User.findById(req.user.id).select("-password");
+
+    if (!doctor || doctor.role !== "doctor") {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: doctor,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// @desc    Update doctor availability
+// @route   PUT /api/doctors/me/availability
+// @access  Doctor
+exports.updateMyAvailability = async (req, res) => {
+  try {
+    const { availabilityStart, availabilityEnd } = req.body;
+
+    if (!availabilityStart || !availabilityEnd) {
+      return res.status(400).json({
+        success: false,
+        message: "availabilityStart and availabilityEnd are required",
+      });
+    }
+
+    const doctor = await User.findById(req.user.id);
+    if (!doctor || doctor.role !== "doctor") {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    doctor.availabilityStart = availabilityStart;
+    doctor.availabilityEnd = availabilityEnd;
+    await doctor.save();
+
+    const doctorSafe = await User.findById(req.user.id).select("-password");
+
+    res.status(200).json({
+      success: true,
+      message: "Availability updated successfully",
+      data: doctorSafe,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

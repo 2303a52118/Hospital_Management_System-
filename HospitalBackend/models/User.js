@@ -36,6 +36,14 @@ const UserSchema = new mongoose.Schema({
   phone: {
     type: String,
   },
+  availabilityStart: {
+    type: String,
+    default: "09:00",
+  },
+  availabilityEnd: {
+    type: String,
+    default: "17:00",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
